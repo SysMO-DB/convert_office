@@ -1,7 +1,9 @@
 require 'convert_office_config'
+require 'pp'
+
 module ConvertOffice
   class ConvertOfficeFormat
-    Async = RUBY_PLATFORM =~ /win32|mswin|mingw/ ? "" : " >> /dev/null 2>&1 &"
+    ASYNC = RUBY_PLATFORM =~ /win32|mswin|mingw/ ? "" : " &"
     JAR_PATH= File.expand_path(File.join(File.dirname(__FILE__),"java","jar","convert_office.jar"))
     TEXT_FORMAT = %w(pdf odt sxw rtf  doc txt html wiki docx)
     XL_FORMAT = %w(pdf ods sxc xls csv tsv html xlsx)
@@ -31,9 +33,19 @@ module ConvertOffice
     }
 
     def convert(input_file,output_file="",format="")
+
       java_bin = ConvertOffice::ConvertOfficeConfig.options[:java_bin]
       port_no = ConvertOffice::ConvertOfficeConfig.options[:soffice_port]
       nailgun = ConvertOffice::ConvertOfficeConfig.options[:nailgun]
+      async = ConvertOffice::ConvertOfficeConfig.options[:asynchronous] ? ASYNC : ""
+      verbose = ConvertOffice::ConvertOfficeConfig.options[:verbose] ? "-v" : ""
+      output = ConvertOffice::ConvertOfficeConfig.options[:verbose] ? "" : " >> /dev/null 2>&1"
+
+      if ConvertOffice::ConvertOfficeConfig.options[:verbose]
+        puts "Options provided are:"
+        pp ConvertOffice::ConvertOfficeConfig.options
+      end
+
       input_extension_name = File.extname(input_file).split(".").last
       if format.blank? && output_file.blank?
         raise ArgumentError=>"Please provide format or output file"
@@ -42,9 +54,10 @@ module ConvertOffice
           if nailgun
             command = "#{Nailgun::NgCommand::NGPATH} con -p #{port_no} -f #{format} #{input_file}"
           else
-            command = "#{java_bin} -Xmx512m -Djava.awt.headless=true -cp #{JAR_PATH} com.artofsolving.jodconverter.cli.ConvertDocument -p #{port_no} -f #{format} #{input_file}"
+            command = "#{java_bin} -Xmx512m -Djava.awt.headless=true -cp #{JAR_PATH} com.artofsolving.jodconverter.cli.ConvertDocument #{verbose} -p #{port_no} -f #{format} #{input_file}"
           end
-          system(command + Async)
+          puts "About to run #{command}" if ConvertOffice::ConvertOfficeConfig.options[:verbose]
+          system(command + output + async)
         end
       elsif format.blank?
         output_format = File.extname(output_file).split(".").last
@@ -52,9 +65,10 @@ module ConvertOffice
           if nailgun
             command = "#{Nailgun::NgCommand::NGPATH} con -p #{port_no} #{input_file} #{output_file}"
           else
-            command = "#{java_bin} -Xmx512m -Djava.awt.headless=true -cp #{JAR_PATH} com.artofsolving.jodconverter.cli.ConvertDocument -p #{port_no} #{input_file} #{output_file}"
+            command = "#{java_bin} -Xmx512m -Djava.awt.headless=true -cp #{JAR_PATH} com.artofsolving.jodconverter.cli.ConvertDocument #{verbose} -p #{port_no} #{input_file} #{output_file}"
           end
-          system(command + Async)
+          puts "About to run #{command}" if ConvertOffice::ConvertOfficeConfig.options[:verbose]
+          system(command + output + async)
         end
       end
     end

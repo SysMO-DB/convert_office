@@ -1,7 +1,14 @@
 ConvertOffice
 =============
 
-_This is a fork of the original https://github.com/amardaxini/convert_office with slight modifications to allow it to be used as a gem using Bundler._
+This is a fork of the original https://github.com/amardaxini/convert_office with slight modifications to allow it to be used as a gem using Bundler.
+
+Two additional configuration keys have also been added, with the default values:
+
+<code>
+    :asynchronous=>true # whether to run the java command asynchronously or not
+    :verbose=>false # whether to print out some additional runtime information (useful for tracking down problems)
+</code>
 
 _Note that this has only been tested on Rails 2.3.14 with Bundler included - although its expected to work on Rails 3, some additional work is required to automatically include the convert_office rake task with Railsties_
 
@@ -37,7 +44,9 @@ These are the default settings which can be overwritten in your enviroment confi
     ConvertOffice::ConvertOfficeConfig.options = {
       :java_bin => "java",          # java binary
       :nailgun =>false,             # for nailgun support
-      :soffice_port=>8100           # Open office port no
+      :soffice_port=>8100,          # Open office port no
+      :asynchronous=>true,          # wait for the java system command to finish or not
+      :verbose=>false               # display some additional runtime information
     }
 </code>
 Example
