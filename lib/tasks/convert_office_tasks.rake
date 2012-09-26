@@ -1,3 +1,4 @@
+
 desc "Generate nailgun script"
 task :convert_office do
 	dest_file = File.expand_path(File.join(File.dirname(__FILE__),'..','..','..','..', "script", 'convert_office_nailgun'))

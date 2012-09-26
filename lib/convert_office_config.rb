@@ -5,6 +5,7 @@ module ConvertOffice
       :nailgun=> false,
       :soffice_port=>8100
     }
+
     cattr_accessor :options
   end
 end

@@ -1,13 +1,21 @@
 ConvertOffice
 =============
 
+_This is a fork of the original https://github.com/amardaxini/convert_office with slight modifications to allow it to be used as a gem using Bundler._
+
+_Note that this has only been tested on Rails 2.3.14 with Bundler included - although its expected to work on Rails 3, some additional work is required to automatically include the convert_office rake task with Railsties_
+
+----
+
 It is a ruby Wrapper of [jodconverter][1] Which is used to convert office format to another office format/html 
 [1]: http://www.artofsolving.com/opensource/jodconverter.
 
 Install
 -------
 
-<code>./script/plugin install git://github.com/amardaxini/convert_office.git</code>
+Add to your Gemfile:
+
+    gem 'convert_office', :git=>'git@github.com:stuzart/convert_office.git'
  
 Requirements
 ------------
